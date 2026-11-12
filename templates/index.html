@@ -6,25 +6,60 @@
     <h2 class="text-2xl font-bold mb-4">Minhas tarefas</h2>
     <ul class="space-y-3">
         {% for tarefa in tarefas %}
-            <li class="bg-white rounded-xl shadow p-4 flex flex-col gap-3
-           sm:flex-row sm:items-center sm:justify-between">
-    <div class="space-y-2 sm:flex-1"
-      {#trocaremos o span em breve #}
-      <span class="block font-medium">{{ tarefa.nome_tarefa }}</span>
-      {# descrição aqui #}
-    </div>
-    <div class="flex flex-wrap items-center gap-2 text-sm">
-        <span class="px-2 py-1 rounded-full bg-slate-100 text-slate-700">{{ tarefa.categoria }}
-        </span>
-        <span class="text-slate-500">
-        {{ tarefa.data_prazo.strftime("%d/%m/%Y") }}
-        </span>
-        {# prioridade aqui #}
-        {# status aqui #}
-    </div>
-    {# botões aqui #}
-</li>
+        <li class="bg-white rounded-xl shadow p-4 flex flex-col gap-3
+                   sm:flex-row sm:items-center sm:justify-between">
+            <div class="space-y-2 sm:flex-1">
+                {#trocaremos o span em breve #}
+                <span class="block font-medium
+                    {% if tarefa.status == 'Concluída' %}
+                        line-through text-slate-400
+                    {% endif %}">
+                    {{ tarefa.nome_tarefa }}
+                </span>
+                <p class="text-sm text-slate-600">{{ tarefa.descricao }}</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 text-sm">
+                <span class="px-2 py-1 rounded-full bg-slate-100 text-slate-700">
+                    {{ tarefa.categoria }}
+                </span>
+                <span class="text-slate-500">
+                    {% if tarefa.data_prazo %}
+                        {{ tarefa.data_prazo.strftime("%d/%m/%Y") }}
+                    {% else %}
+                        Sem prazo
+                    {% endif %}
+                </span>
+                <span class="px-2 py-1 rounded-full
+                    {% if tarefa.prioridade == 'ALTA' %}
+                        bg-red-100 text-red-700
+                    {% elif tarefa.prioridade == 'MEDIA' %}
+                        bg-amber-100 text-amber-700
+                    {% else %}
+                        bg-green-100 text-green-700
+                    {% endif %}">
+                    Prioridade:
+                    {% if tarefa.prioridade == 'ALTA' %}Alta
+                    {% elif tarefa.prioridade == 'MEDIA' %}Média
+                    {% else %}Baixa{% endif %}
+                </span>
+                <span class="px-2 py-1 rounded-full
+                    {% if tarefa.status == 'Concluída' %}
+                        bg-indigo-100 text-indigo-700
+                    {% elif tarefa.status == 'Não realizada' %}
+                        bg-slate-200 text-slate-700
+                    {% else %}
+                        bg-blue-100 text-blue-700
+                    {% endif %}">
+                    {{ tarefa.status }}
+                </span>
+            </div>
+            {# botões aqui #}
+        </li>
+        {% else %}
             {# lista vazia aqui #}
+            <li class="bg-white rounded-xl shadow p-4 text-slate-500">
+                Nenhuma tarefa cadastrada.
+            </li>
         {% endfor %}
     </ul>
     {# contador aqui #}
