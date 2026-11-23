@@ -59,9 +59,37 @@ def logout():
 @app.route("/adicionar", methods=["GET", "POST"])
 def adicionar():
     if request.method == "GET":
-        return render_template("formulario.html", categorias=CATEGORIAS , dados = {}, erros=[])
-    
+        return render_template("formulario.html", categorias=CATEGORIAS, dados={}, erros=[])
+
     # ler o POST aqui
+    nome_tarefa = request.form.get("nome_tarefa", "").strip()
+    descricao = request.form.get("descricao", "").strip()
+    categoria = request.form.get("categoria", "").strip()
+    data_prazo = request.form.get("data_prazo", "").strip()
+    prioridade = request.form.get("prioridade", "").strip()
+
+    erros = []
+    if not nome_tarefa:
+        erros.append("O nome da tarefa é obrigatório.")
+    if not categoria:
+        erros.append("A categoria é obrigatória.")
+    if not data_prazo:
+        erros.append("A data de prazo é obrigatória.")
+    if not prioridade:
+        erros.append("A prioridade é obrigatória.")
+
+    if erros:
+        return render_template("formulario.html", categorias=CATEGORIAS,
+                               dados={"nome_tarefa": nome_tarefa, "descricao": descricao,
+                                      "categoria": categoria, "data_prazo": data_prazo,
+                                      "prioridade": prioridade}, erros=erros)
+
+    if inserir_tarefa(nome_tarefa, descricao, categoria, data_prazo, prioridade):
+        flash("Tarefa adicionada com sucesso!")
+    else:
+        flash("Erro ao adicionar a tarefa.", "erro")
+
+    return redirect("/")
 
 # --------------------------------------
 # Tratamento de erro - Código 404
