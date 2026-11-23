@@ -1,9 +1,13 @@
-from flask import Flask, render_template, request, session, redirect
-from database import consultar_tarefas
+from flask import Flask, render_template, request, session, redirect, flash
+from database import consultar_tarefas, inserir_tarefa
+from datetime import date
+
+CATEGORIAS = ["Escola", "Trabalho", "Projetos", "Pessoal", "Saúde", "Outros"]
 
 # A aplicação precisa ser criada ANTES de usar o decorador @app.route
 app = Flask(__name__)
 app.secret_key = "dssenai"
+
 
 # Dados de acesso do ADMIN
 ADMIN_EMAIL = "carloseduardo@gmail.com"
@@ -18,6 +22,8 @@ def home():
     # Usuário logado: consulta as tarefas e envia para o template
     tarefas = consultar_tarefas()  # Chama a função consultar_tarefas() do database.py
     return render_template("index.html", tarefas=tarefas)  # Passa a lista de tarefas para o HTML
+
+
 
 
 # -----------------------------------------
@@ -48,6 +54,14 @@ def logout():
     session.clear()  # Apaga a lista sessão
     return redirect("/login")
 
+# -----------------------------------------
+# Rota para adicionar tarefa
+@app.route("/adicionar", methods=["GET", "POST"])
+def adicionar():
+    if request.method == "GET":
+        return render_template("formulario.html", categorias=CATEGORIAS , dados = {}, erros=[])
+    
+    # ler o POST aqui
 
 # --------------------------------------
 # Tratamento de erro - Código 404
