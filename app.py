@@ -87,8 +87,7 @@ def adicionar():
     if inserir_tarefa(nome_tarefa, descricao, categoria, data_prazo, prioridade):
         flash("Tarefa adicionada com sucesso!")
     else:
-        flash("Erro ao adicionar a tarefa.", "erro")
-
+        flash("Não foi possível salvar. Confira a conexão com o banco.")
     return redirect("/")
 
 # --------------------------------------
