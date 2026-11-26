@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, session, redirect, flash
-from database import consultar_tarefas, inserir_tarefa
+from database import (consultar_tarefas, inserir_tarefa, buscar_tarefa, concluir_tarefa, apagar_tarefa) 
 from datetime import date
 
 # Lista de categorias que aparecem no <select> do formulario.html
@@ -108,6 +108,20 @@ def adicionar():
     else:
         flash("Não foi possível salvar. Confira a conexão com o banco.")
     return redirect("/")                       # volta pra home
+
+    @app.route("/concluir/<int:idtarefa>", methods=["POST"])
+    def concluir(idtarefa):
+        tarefa = buscar_tarefa(idtarefa)
+        if tarefa is None or tarefa["status"] == "Concluída":
+            flash("Não há o que concluir nessa tarefa.")
+        elif concluir_tarefa(idtarefa):
+            flash("Tarefa concluída. Bom trabalho!")
+        else:
+            flash("Não foi possível concluir a tarefa.")
+        return redirect("/")
+    
+    
+    # Passo 7: a rota excluir entra aqui
 
 # --------------------------------------
 # Tratamento de erro - Código 404
