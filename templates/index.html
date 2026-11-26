@@ -55,6 +55,8 @@
                 </span>
             </div>
             <div class="flex gap-2">
+                {# Botao Concluir: so aparece se a tarefa NAO estiver concluida #}
+                {# O form envia (POST) pra rota /concluir com o id da tarefa #}
                 {% if tarefa.status != "Concluída" %}
                    <form action="/concluir/{{ tarefa.idtarefa }}" method="post"
                           class="flex-1 sm:flex-none">
@@ -65,6 +67,7 @@
                    </form>
                 {% endif %}
                 {# Editar aqui #}
+                {# Link Excluir: leva pra pagina de confirmacao (/excluir/id) #}
                 <a href="/excluir/{{ tarefa.idtarefa }}"
                     class="flex-1 sm:flex-none px-4 py-3 rounded-lg text-center
                             bg-red-100 text-red-700">

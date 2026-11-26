@@ -109,20 +109,37 @@ def adicionar():
         flash("Não foi possível salvar. Confira a conexão com o banco.")
     return redirect("/")                       # volta pra home
 
-    @app.route("/concluir/<int:idtarefa>", methods=["POST"])
-    def concluir(idtarefa):
-        tarefa = buscar_tarefa(idtarefa)
-        if tarefa is None or tarefa["status"] == "Concluída":
-            flash("Não há o que concluir nessa tarefa.")
-        elif concluir_tarefa(idtarefa):
-            flash("Tarefa concluída. Bom trabalho!")
-        else:
-            flash("Não foi possível concluir a tarefa.")
-        return redirect("/")
-    
-    
-    # Passo 7: a rota excluir entra aqui
+# -----------------------------------------
+# Rota para concluir tarefa
+# <int:idtarefa> = pega o numero da tarefa que vem na URL (ex: /concluir/18)
+# So aceita POST (o botao "Concluir" envia o form)
+@app.route("/concluir/<int:idtarefa>", methods=["POST"])
+def concluir(idtarefa):
+    tarefa = buscar_tarefa(idtarefa)           # procura a tarefa no banco
+    if tarefa is None or tarefa["status"] == "Concluída":  # nao existe ou ja concluida
+        flash("Não há o que concluir nessa tarefa.")
+    elif concluir_tarefa(idtarefa):            # tentou marcar como concluida
+        flash("Tarefa concluída. Bom trabalho!")
+    else:
+        flash("Não foi possível concluir a tarefa.")
+    return redirect("/")                       # volta pra home
 
+
+# -----------------------------------------
+# Rota para excluir tarefa
+# GET = mostra a pagina de confirmacao | POST = apaga de verdade
+@app.route("/excluir/<int:idtarefa>", methods=["GET", "POST"])
+def excluir(idtarefa):
+    tarefa = buscar_tarefa(idtarefa)           # procura a tarefa antes de excluir
+    if tarefa is None:                         # se nao existir...
+        flash("Tarefa não encontrada.")
+        return redirect("/")
+    if request.method == "GET":                # GET = so mostra a confirmacao
+        return render_template("confirmar_exclusao.html", tarefa=tarefa)
+    apagar_tarefa(idtarefa)                    # POST = apaga do banco
+    flash("Tarefa excluída.")
+    return redirect("/")
+        
 # --------------------------------------
 # Tratamento de erro - Código 404
 @app.errorhandler(404)

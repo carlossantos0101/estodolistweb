@@ -1,6 +1,8 @@
 import mysql.connector
 from mysql.connector import Error
 
+# Abre a conexao com o banco MySQL e devolve (conexao, cursor).
+# O cursor e o "ponteiro" que executa os comandos SQL.
 def conectar():
     try:
         conexao = mysql.connector.connect(
@@ -44,6 +46,7 @@ def inserir_tarefa(nome_tarefa,descricao,categoria,data_prazo,prioridade):
         conexao.close()
         
 
+# Busca TODAS as tarefas do banco e devolve uma lista (vazia se nao houver).
 def consultar_tarefas():
     #Chamar função conectar
     conexao, cursor = conectar()
@@ -165,6 +168,7 @@ def alterar_tarefa(idtarefa, nome_tarefa,descricao,categoria,data_prazo,priorida
         
         
         
+# Busca UMA tarefa pelo id. Devolve um dicionario (ou None se nao existir).
 def buscar_tarefa(idtarefa):
     conexao, cursor = conectar()
 
