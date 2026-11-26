@@ -1,0 +1,6 @@
+# Configuração do Kilo (ferramenta local)
+.kilo/
+
+# Python
+__pycache__/
+*.pyc

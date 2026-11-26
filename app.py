@@ -19,11 +19,20 @@ def validar_tarefa(nome, descricao, categoria, prazo, prioridade):
         erros.append("Nome: de 5 a 30 caracteres, não só números.")
     if len(descricao) > 100:
         erros.append("Descrição: no máximo 100 caracteres.")
-    if len(categoria) < 5 or len (categoria) > 30  or categoria.isdigit():
+    if len(categoria) < 5 or len(categoria) > 30 or categoria.isdigit():
         erros.append("Categoria: de 5 a 30 caracteres, não só números.")
     if prioridade not in ("ALTA", "MEDIA", "BAIXA"):
         erros.append("Prioridade inválida.")
-    #validar o prazo aqui
+    if not prazo:
+        erros.append("Data de prazo é obrigatória.")
+    else:
+        try:
+            data = date.fromisoformat(prazo)
+            if data < date.today():
+                erros.append("A data de prazo não pode estar no passado.")
+        except ValueError:
+            erros.append("Data de prazo inválida.")
+    return erros
 
 @app.route("/")  # HomePage - Página Inicial
 def home():
@@ -76,6 +85,13 @@ def adicionar():
     data_prazo = request.form.get("data_prazo", "").strip()
     prioridade = request.form.get("prioridade", "").strip()
 
+    erros = validar_tarefa(nome_tarefa, descricao, categoria, data_prazo, prioridade)
+
+    if erros:
+        return render_template("formulario.html", categorias=CATEGORIAS,
+                               dados={"nome_tarefa": nome_tarefa, "descricao": descricao,
+                                      "categoria": categoria, "data_prazo": data_prazo,
+                                      "prioridade": prioridade}, erros=erros)
 
     if inserir_tarefa(nome_tarefa, descricao, categoria, data_prazo, prioridade):
         flash("Tarefa adicionada com sucesso!")
