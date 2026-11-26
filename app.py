@@ -145,7 +145,7 @@ def excluir(idtarefa):
 @app.errorhandler(404)
 def not_found(erro):
     return render_template("erro404.html"), 404
-
+''
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

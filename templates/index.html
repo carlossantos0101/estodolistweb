@@ -3,7 +3,14 @@
 
 {% block content %}
   <main class="max-w-5xl mx-auto px-4 py-6">
-    <h2 class="text-2xl font-bold mb-4">Minhas tarefas</h2>
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-2xl font-bold">Minhas tarefas</h2>
+      {# Link Nova Tarefa: abre o formulario de cadastro (GET /adicionar) #}
+      <a href="/adicionar"
+          class="px-4 py-3 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700">
+          Nova Tarefa
+      </a>
+    </div>
     {# 'tarefas' e a lista que o app.py mandou (consultar_tarefas). O for repete pra cada tarefa #}
     <ul class="space-y-3">
         {% for tarefa in tarefas %}
