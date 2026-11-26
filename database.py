@@ -27,6 +27,7 @@ def inserir_tarefa(nome_tarefa,descricao,categoria,data_prazo,prioridade):
 
     try:
         # %s SQL Parametrizado para evitar SQL Injection
+        # INSERT = COMANDO SQL QUE INSERE (CRIA) UMA NOVA TAREFA NO BANCO
         sql = "INSERT INTO tarefa (nomeTarefa,descricao,categoria,dataPrazo,prioridade) VALUES (%s, %s, %s, %s, %s)"
         # Executa o SQL Parametrizado e passa os parâmetros da função via TUPLA
         cursor.execute(sql,(nome_tarefa,descricao,categoria,data_prazo,prioridade))
@@ -34,7 +35,7 @@ def inserir_tarefa(nome_tarefa,descricao,categoria,data_prazo,prioridade):
         conexao.commit()
         # Retornar TRUE para função principal
         return True
-    
+
     except Error as erro:
         print(f"ERRO! Falha ao inserir a tarefa: {erro}")
         return False
@@ -161,3 +162,33 @@ def alterar_tarefa(idtarefa, nome_tarefa,descricao,categoria,data_prazo,priorida
     finally:
         cursor.close()
         conexao.close()
+        
+        
+        
+def buscar_tarefa(idtarefa):
+    conexao, cursor = conectar()
+
+    if conexao is None:
+        return None
+
+    try:
+        sql = """
+            SELECT
+            idTarefa AS idtarefa,
+            dataPrazo AS data_prazo,
+            nomeTarefa AS nome_tarefa,
+            status,
+            descricao,
+            categoria,
+            prioridade
+            FROM tarefa WHERE idTarefa = %s
+            """
+        cursor.execute(sql, (idtarefa,))
+        return cursor.fetchone() # Um dicionário, ou None se não existir  
+    except Error as erro:
+        print(f"ERRO! Falha ao buscar a tarefa: {erro}")
+        return None
+    finally:
+        cursor.close()
+        conexao.close()
+                    
