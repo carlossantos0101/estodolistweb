@@ -13,6 +13,17 @@ app.secret_key = "dssenai"
 ADMIN_EMAIL = "carloseduardo@gmail.com"
 ADMIN_SENHA = "123456"
 
+def validar_tarefa(nome, descricao, categoria, prazo, prioridade):
+    erros = []
+    if len(nome) < 5 or len(nome) > 30 or nome.isdigit():
+        erros.append("Nome: de 5 a 30 caracteres, não só números.")
+    if len(descricao) > 100:
+        erros.append("Descrição: no máximo 100 caracteres.")
+    if len(categoria) < 5 or len (categoria) > 30  or categoria.isdigit():
+        erros.append("Categoria: de 5 a 30 caracteres, não só números.")
+    if prioridade not in ("ALTA", "MEDIA", "BAIXA"):
+        erros.append("Prioridade inválida.")
+    #validar o prazo aqui
 
 @app.route("/")  # HomePage - Página Inicial
 def home():
@@ -22,9 +33,6 @@ def home():
     # Usuário logado: consulta as tarefas e envia para o template
     tarefas = consultar_tarefas()  # Chama a função consultar_tarefas() do database.py
     return render_template("index.html", tarefas=tarefas)  # Passa a lista de tarefas para o HTML
-
-
-
 
 # -----------------------------------------
 # Rota de Login
@@ -68,21 +76,6 @@ def adicionar():
     data_prazo = request.form.get("data_prazo", "").strip()
     prioridade = request.form.get("prioridade", "").strip()
 
-    erros = []
-    if not nome_tarefa:
-        erros.append("O nome da tarefa é obrigatório.")
-    if not categoria:
-        erros.append("A categoria é obrigatória.")
-    if not data_prazo:
-        erros.append("A data de prazo é obrigatória.")
-    if not prioridade:
-        erros.append("A prioridade é obrigatória.")
-
-    if erros:
-        return render_template("formulario.html", categorias=CATEGORIAS,
-                               dados={"nome_tarefa": nome_tarefa, "descricao": descricao,
-                                      "categoria": categoria, "data_prazo": data_prazo,
-                                      "prioridade": prioridade}, erros=erros)
 
     if inserir_tarefa(nome_tarefa, descricao, categoria, data_prazo, prioridade):
         flash("Tarefa adicionada com sucesso!")
